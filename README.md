@@ -2,6 +2,8 @@
 
 A concept demo that transforms a single content brief into three adapted visual formats — presentation slide, infographic, and social post — built with Visme's design system.
 
+![Content Forge preview](content-forge-preview.png)
+
 ---
 
 ## What it does
