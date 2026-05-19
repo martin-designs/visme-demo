@@ -1,0 +1,216 @@
+/**
+ * Visme Design System — CSS Custom Properties
+ * Synthesized from 7 pages across www.visme.co, dashboard.visme.co, my.visme.co
+ * Generated: 2026-05-17
+ */
+
+:root {
+
+  /* ─────────────────────────────────────────
+   * BRAND COLORS
+   * ───────────────────────────────────────── */
+
+  --color-brand-sky:        #3CACD7;  /* Primary brand blue — links, icons, hover */
+  --color-brand-sky-dark:   #3d92e7;  /* Darker sky — marketing buttons, interactive */
+  --color-brand-blue:       #2693FF;  /* App action blue — product UI buttons */
+  --color-brand-navy:       #293745;  /* Primary text, dark backgrounds */
+  --color-brand-amber:      #FCBC41;  /* Accent, warning */
+  --color-brand-yellow:     #FFCC00;  /* Decorative accent only */
+  --color-brand-red:        #F45F50;  /* Danger */
+  --color-brand-green:      #6CC395;  /* Success */
+  --color-brand-purple:     #9062F0;  /* Premium / Pro tier */
+  --color-brand-coral:      #fa607e;  /* App secondary highlight */
+
+  /* ─────────────────────────────────────────
+   * DARK TEXT SCALE  (#293745 → #949DB0)
+   * ───────────────────────────────────────── */
+
+  --color-dark-1:  #293745;  /* Body text, primary headings */
+  --color-dark-2:  #2B3140;  /* Secondary headings */
+  --color-dark-3:  #3F4759;  /* Labels, subheadings */
+  --color-dark-4:  #586276;  /* Captions, muted labels */
+  --color-dark-5:  #798297;  /* Placeholder, tertiary text */
+  --color-dark-6:  #949DB0;  /* Disabled text */
+
+  /* ─────────────────────────────────────────
+   * BASE / LIGHT SCALE  (#7F859D → #EFF6FC)
+   * ───────────────────────────────────────── */
+
+  --color-base-1:  #7F859D;  /* Borders, dividers (heavy) */
+  --color-base-2:  #A0A5B8;  /* Borders (medium) */
+  --color-base-3:  #BBD0E5;  /* Borders (light) */
+  --color-base-4:  #DAE4EA;  /* Subtle borders, secondary backgrounds */
+  --color-base-5:  #E7EFF3;  /* Background tints */
+  --color-base-6:  #EFF6FC;  /* Lightest tint, hover backgrounds */
+
+  /* ─────────────────────────────────────────
+   * MID / GRAY SCALE
+   * ───────────────────────────────────────── */
+
+  --color-mid-1:  #97989A;  /* Icon fill (inactive) */
+  --color-mid-2:  #ABABAB;  /* Input borders (legacy) */
+  --color-mid-3:  #DADADA;  /* Dividers */
+  --color-mid-4:  #E4E4E4;  /* Subtle dividers */
+  --color-mid-5:  #F3F3F3;  /* Table stripe, card bg */
+  --color-mid-6:  #FDFDFD;  /* Near-white background */
+
+  /* ─────────────────────────────────────────
+   * SURFACE TOKENS
+   * ───────────────────────────────────────── */
+
+  --color-surface-marketing: #FFFFFF;   /* Marketing page bg */
+  --color-surface-app:       #ECF2F5;   /* App shell bg — every authenticated page */
+  --color-surface-card:      #FFFFFF;   /* Cards, panels */
+  --color-surface-sidebar:   #F8FAFB;   /* Sidebar, secondary panels */
+  --color-surface-dark:      #020c1f;   /* Dark hero sections */
+
+  /* ─────────────────────────────────────────
+   * STATUS COLORS
+   * ───────────────────────────────────────── */
+
+  --color-success:          #6CC395;
+  --color-success-dark:     #48906B;
+  --color-success-light:    #CAF5DF;
+  --color-warning:          #FCBC41;
+  --color-warning-dark:     #CF9627;
+  --color-warning-light:    #FFE5B1;
+  --color-error:            #F45F50;
+  --color-error-dark:       #CA4438;
+  --color-error-light:      #FFAEA7;
+  --color-info:             #3CACD7;
+
+  /* ─────────────────────────────────────────
+   * BORDER TOKENS
+   * ───────────────────────────────────────── */
+
+  --color-border-default:   #dee2e6;
+  --color-border-subtle:    #DAE4EA;
+  --color-border-app:       #DCDFE6;
+  --color-border-focus:     #3CACD7;
+
+  /* ─────────────────────────────────────────
+   * SEMANTIC ACTION TOKENS
+   * ───────────────────────────────────────── */
+
+  --color-action-marketing: var(--color-brand-sky-dark);  /* Marketing CTAs */
+  --color-action-app:       var(--color-brand-blue);       /* App buttons */
+  --color-action-hover:     var(--color-brand-sky);        /* Hover state */
+  --color-action-danger:    var(--color-error);
+  --color-action-success:   var(--color-success);
+
+  /* ─────────────────────────────────────────
+   * TYPOGRAPHY
+   * ───────────────────────────────────────── */
+
+  --font-sans:       'Lato', sans-serif;          /* Universal body */
+  --font-heading:    'Montserrat', sans-serif;    /* Marketing display headings */
+  --font-secondary:  'Open Sans', sans-serif;     /* App labels, secondary */
+
+  /* Marketing type scale (16px base) */
+  --fs-display:  48px;
+  --fs-h1:       44px;
+  --fs-h2:       40px;
+  --fs-h3:       36px;
+  --fs-h4:       24px;
+  --fs-body-lg:  18px;
+  --fs-body:     16px;
+  --fs-sm:       15px;
+  --fs-xs:       14px;
+  --fs-xxs:      13px;
+
+  /* App type scale (14px base) */
+  --fs-app-h1:     30px;
+  --fs-app-h2:     28px;
+  --fs-app-h3:     21px;
+  --fs-app-body:   14px;
+  --fs-app-label:  13px;
+  --fs-app-caption: 11px;
+
+  /* ─────────────────────────────────────────
+   * SPACING
+   * ───────────────────────────────────────── */
+
+  --spacing-1:    1px;
+  --spacing-4:    4px;
+  --spacing-8:    8px;
+  --spacing-10:   10px;
+  --spacing-15:   15px;
+  --spacing-20:   20px;
+  --spacing-24:   24px;
+  --spacing-30:   30px;
+  --spacing-35:   35px;
+  --spacing-40:   40px;
+  --spacing-48:   48px;
+  --spacing-50:   50px;
+  --spacing-60:   60px;
+  --spacing-100:  100px;
+  --spacing-135:  135px;
+  --spacing-235:  235px;
+
+  /* Semantic spacing aliases */
+  --spacing-xs:   var(--spacing-4);
+  --spacing-sm:   var(--spacing-8);
+  --spacing-md:   var(--spacing-20);
+  --spacing-lg:   var(--spacing-24);
+  --spacing-xl:   var(--spacing-40);
+  --spacing-2xl:  var(--spacing-50);
+
+  /* ─────────────────────────────────────────
+   * BORDER RADIUS
+   * ───────────────────────────────────────── */
+
+  --radius-none:  0px;
+  --radius-xs:    2px;
+  --radius-sm:    4px;   /* Controls: inputs, selects, checkboxes, app buttons */
+  --radius-md:    8px;   /* Cards, marketing buttons */
+  --radius-lg:    16px;  /* Large cards */
+  --radius-xl:    20px;  /* App modals, large panels */
+  --radius-xl-marketing: 24px;  /* Marketing feature cards */
+  --radius-full:  50px;  /* Pills, avatars */
+
+  /* Semantic radius aliases */
+  --radius-control: var(--radius-sm);
+  --radius-button:  var(--radius-sm);
+  --radius-card:    var(--radius-md);
+  --radius-modal:   var(--radius-xl);
+  --radius-pill:    var(--radius-full);
+
+  /* ─────────────────────────────────────────
+   * SHADOWS
+   * ───────────────────────────────────────── */
+
+  --shadow-border:   rgb(218, 228, 234) 0px -1px 0px 0px;
+  --shadow-sm:       rgba(33, 51, 67, 0.12) 0px 1px 5px 0px;
+  --shadow-offset:   rgba(49, 65, 82, 0.3) 2px 2px 6px 0px;
+  --shadow-md:       rgba(184, 184, 184, 0.3) 0px 0px 12px 3px;
+  --shadow-float:    rgba(0, 0, 0, 0.25) 0px 0px 10px 0px;
+  --shadow-lg:       rgba(0, 0, 0, 0.12) 0px 4px 16px 0px;
+  --shadow-xl:       rgba(0, 0, 0, 0.28) 0px 8px 28px 0px;
+
+  /* Semantic shadow aliases */
+  --shadow-card:     var(--shadow-sm);
+  --shadow-dropdown: var(--shadow-offset);
+  --shadow-modal:    var(--shadow-float);
+  --shadow-elevated: var(--shadow-lg);
+
+  /* ─────────────────────────────────────────
+   * MOTION
+   * ───────────────────────────────────────── */
+
+  --duration-fast:    0.1s;
+  --duration-normal:  0.15s;
+  --duration-medium:  0.2s;
+  --duration-slow:    0.3s;
+  --ease-default:     ease;
+  --ease-custom:      cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ─────────────────────────────────────────
+   * LAYOUT
+   * ───────────────────────────────────────── */
+
+  --layout-nav-width:     250px;    /* App sidebar */
+  --layout-top-offset:    72px;     /* Marketing nav height */
+  --layout-container:     1280px;   /* Max content width */
+  --layout-container-pad: 20px;     /* Container horizontal padding */
+
+}

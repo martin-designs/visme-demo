@@ -1,0 +1,967 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Visme - Content Forge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Content Forge — a Visme Labs demo that adapts a single source brief into a presentation slide, an infographic, and a social post.">
+
+  <!-- Apply saved theme before paint to prevent flash -->
+  <script>
+    (function () {
+      var t = localStorage.getItem('cf-theme');
+      if (t === 'dark') document.documentElement.dataset.theme = 'dark';
+    })();
+  </script>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Shared project styles -->
+  <link rel="stylesheet" href="visme-design-system/synthesized/variables.css">
+  <link rel="stylesheet" href="content_forge.css">
+
+  <!-- v3.1: dark-mode tokens + responsive overrides -->
+  <style>
+    /* ── Light theme (default) ── */
+    :root {
+      --cf-bg:                    #ECF2F5;
+      --cf-surface:               #FFFFFF;
+      --cf-surface-muted:         #F8FAFB;
+      --cf-border:                #DAE4EA;
+      --cf-border-soft:           #DCDFE6;
+      --cf-border-dashed:         #BBD0E5;
+      --cf-text-primary:          #293745;
+      --cf-text-secondary:        #586276;
+      --cf-text-muted:            #5E6778;
+      --cf-text-faint:            #6B7280;
+      --cf-text-divider:          #B0B8C8;
+      --cf-primary:               #2693FF;
+      --cf-primary-hover:         #1F84E8;
+      --cf-primary-disabled:      #E4E4E4;
+      --cf-primary-disabled-text: #949DB0;
+      --cf-accent-link:           #3CACD7;
+      --cf-accent-link-bg:        #EFF6FC;
+      --cf-success-fg:            #48906B;
+      --cf-success-bg:            #CAF5DF;
+      --cf-inactive-bg:           #F3F3F3;
+      --cf-inactive-dot:          #6B7280;
+      --cf-avatar-purple:         #9062F0;
+      --cf-spinner-green:         #6CC395;
+      --cf-copy-toast-bg:         #293745;
+      --cf-copy-toast-text:       #FFFFFF;
+    }
+
+    /* ── Dark theme ── */
+    [data-theme="dark"] {
+      --cf-bg:                    #0F1117;
+      --cf-surface:               #1A1F2E;
+      --cf-surface-muted:         #0F1117;
+      --cf-border:                #252B3B;
+      --cf-border-soft:           #2D3448;
+      --cf-border-dashed:         #2D3448;
+      --cf-text-primary:          #E8EDF5;
+      --cf-text-secondary:        #8B95A8;
+      --cf-text-muted:            #6B7385;
+      --cf-text-faint:            #6B7385;
+      --cf-text-divider:          #2D3448;
+      --cf-primary:               #2693FF;
+      --cf-primary-hover:         #1F84E8;
+      --cf-primary-disabled:      #252B3B;
+      --cf-primary-disabled-text: #6B7385;
+      --cf-accent-link:           #3CACD7;
+      --cf-accent-link-bg:        #0F2035;
+      --cf-success-fg:            #4ADE80;
+      --cf-success-bg:            #0F2B1A;
+      --cf-inactive-bg:           #1A1F2E;
+      --cf-inactive-dot:          #6B7385;
+      --cf-avatar-purple:         #9062F0;
+      --cf-spinner-green:         #4ADE80;
+      --cf-copy-toast-bg:         #252B3B;
+      --cf-copy-toast-text:       #E8EDF5;
+    }
+
+    /* ── Dark-mode overrides for shared CSS classes ── */
+    [data-theme="dark"] body {
+      background: #0F1117;
+      color: #E8EDF5;
+    }
+    [data-theme="dark"] .cf-icon-btn:hover,
+    [data-theme="dark"] .cf-icon-btn:focus-visible {
+      background: #252B3B;
+    }
+    [data-theme="dark"] .cf-card-action {
+      color: #8B95A8;
+      border-color: #252B3B;
+    }
+    [data-theme="dark"] .cf-eyebrow {
+      color: #6B7385;
+    }
+
+    /* ── Interaction animations ── */
+    @keyframes cfCardReveal {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes cfPillPop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(1.12); }
+      100% { transform: scale(1); }
+    }
+
+    /* Shimmer sweep for loading skeleton */
+    @keyframes cfShimmer {
+      from { transform: translateX(-100%); }
+      to   { transform: translateX(170%); }
+    }
+
+    /* Button press scale + color transition for copy-button revert */
+    .cf-pressable,
+    .cf-card-action {
+      transition: transform 80ms ease, background 150ms ease, color 200ms ease, border-color 200ms ease !important;
+    }
+    .cf-pressable:active:not(:disabled),
+    .cf-card-action:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    /* ── Theme-change transitions ── */
+    body,
+    main,
+    header,
+    section,
+    article {
+      transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+    }
+
+    /* ── Card hover lift ── */
+    .cf-card {
+      transition: box-shadow 160ms ease, transform 160ms ease, background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+    }
+    @media (hover: hover) {
+      .cf-card--filled:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+      }
+      [data-theme="dark"] .cf-card--filled:hover {
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.32);
+      }
+    }
+
+    /* ── Keyboard focus ring (branded, replaces browser default) ── */
+    button:focus-visible,
+    [role="tab"]:focus-visible,
+    a:focus-visible {
+      outline: 2px solid var(--cf-primary);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .cf-icon-btn:focus-visible {
+      outline: 2px solid var(--cf-accent-link);
+      outline-offset: 1px;
+      border-radius: 6px;
+    }
+
+    /* ── Submit button — gradient + hover filter + pressed inset shadow ── */
+    .cf-submit-btn:not(:disabled) {
+      background: linear-gradient(165deg, #45A2FF 0%, #2693FF 100%);
+      transition: transform 80ms ease, filter 150ms ease !important;
+    }
+    .cf-submit-btn:not(:disabled):hover {
+      filter: brightness(0.92);
+    }
+    .cf-submit-btn:not(:disabled):active {
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+  </style>
+
+  <!-- Third-party runtime -->
+  <script src="https://unpkg.com/lucide@0.474.0/dist/umd/lucide.min.js"></script>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+</head>
+<body data-screen-label="Content Forge">
+  <div id="root"></div>
+
+  <script src="content_forge_data.js"></script>
+  <script type="text/babel">
+(function (global) {
+  'use strict';
+
+  const CF = global.ContentForge;
+  if (!CF) throw new Error('content_forge_data.js must load before this script');
+
+  const {
+    SURFACE_KEYS, LAYOUTS, contextEngineData,
+    CATEGORIES, SURFACES_BY_KEY,
+    OPTION_LABELS, OPTION_COUNT, TIMING, SIZES,
+  } = CF;
+
+  /* ── All colors reference CSS custom properties so dark/light toggle is CSS-only ── */
+  const C = Object.freeze({
+    bg:                   'var(--cf-bg)',
+    surface:              'var(--cf-surface)',
+    surfaceMuted:         'var(--cf-surface-muted)',
+    border:               'var(--cf-border)',
+    borderSoft:           'var(--cf-border-soft)',
+    borderDashed:         'var(--cf-border-dashed)',
+    textPrimary:          'var(--cf-text-primary)',
+    textSecondary:        'var(--cf-text-secondary)',
+    textMuted:            'var(--cf-text-muted)',
+    textFaint:            'var(--cf-text-faint)',
+    textDivider:          'var(--cf-text-divider)',
+    primary:              'var(--cf-primary)',
+    primaryHover:         'var(--cf-primary-hover)',
+    primaryDisabled:      'var(--cf-primary-disabled)',
+    primaryDisabledText:  'var(--cf-primary-disabled-text)',
+    accentLink:           'var(--cf-accent-link)',
+    accentLinkBg:         'var(--cf-accent-link-bg)',
+    successFg:            'var(--cf-success-fg)',
+    successBg:            'var(--cf-success-bg)',
+    inactiveBg:           'var(--cf-inactive-bg)',
+    inactiveDot:          'var(--cf-inactive-dot)',
+    avatarPurple:         'var(--cf-avatar-purple)',
+    spinnerGreen:         'var(--cf-spinner-green)',
+    copyToastBg:          'var(--cf-copy-toast-bg)',
+    copyToastText:        'var(--cf-copy-toast-text)',
+  });
+
+  const Z          = Object.freeze({ TOAST: 200, COPY_TOAST: 201 });
+  const MAX_WIDTH  = 1440;
+  const HDR_H      = 60;
+  const TA_H       = 230;
+  const BTN_H      = 48;
+  const NARROW_BP  = 960;
+  const SZ         = { sm: 11, md: 14, lg: 16, xl: 18, xxl: 22, hero: 28 };
+
+  /* ── Helpers ── */
+  const icon = (name, style) => <i data-lucide={name} style={style} />;
+
+  const countWords = (t) => t.trim().split(/\s+/).filter(Boolean).length;
+
+  const useLucideIcons = () => {
+    React.useLayoutEffect(() => { global.lucide?.createIcons?.(); });
+  };
+
+  const useMediaQuery = (maxWidth) => {
+    const q = `(max-width: ${maxWidth}px)`;
+    const [hit, setHit] = React.useState(() => global.matchMedia?.(q).matches ?? false);
+    React.useEffect(() => {
+      if (!global.matchMedia) return;
+      const mq = global.matchMedia(q);
+      const fn = (e) => setHit(e.matches);
+      mq.addEventListener('change', fn);
+      return () => mq.removeEventListener('change', fn);
+    }, [maxWidth]);
+    return hit;
+  };
+
+  /* ── Header ── */
+  const Header = ({ theme, toggleTheme }) => (
+    <header style={{
+      height: HDR_H, background: C.surface,
+      borderBottom: `1px solid ${C.border}`,
+      display: 'flex', alignItems: 'center',
+      padding: '0 24px', gap: 16, flexShrink: 0,
+    }}>
+      <a href="#" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+        <span aria-hidden="true" className="cf-font-montserrat" style={{
+          width: 30, height: 30, borderRadius: 7, background: C.accentLink,
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          color: '#fff', fontWeight: 800, fontSize: 16,
+        }}>V</span>
+        <span className="cf-font-montserrat" style={{
+          fontWeight: 700, fontSize: 20, color: C.textPrimary, letterSpacing: '-0.01em',
+        }}>Visme</span>
+      </a>
+
+      <nav aria-label="Breadcrumb" style={{
+        display: 'flex', alignItems: 'center', gap: 8,
+        marginLeft: 12, fontSize: 14, color: C.textSecondary,
+      }}>
+        <span style={{ color: C.textDivider }} aria-hidden="true">/</span>
+        <a href="#" style={{ color: C.textSecondary, textDecoration: 'none' }}>Tools</a>
+        <span style={{ color: C.textDivider }} aria-hidden="true">/</span>
+        <span style={{ color: C.textPrimary, fontWeight: 600 }} aria-current="page">Content Forge</span>
+        <span className="cf-font-opensans" style={{
+          display: 'inline-flex', alignItems: 'center', gap: 4,
+          marginLeft: 8, background: C.accentLinkBg, color: C.accentLink,
+          padding: '2px 8px', borderRadius: 50, fontSize: 11, fontWeight: 600,
+          letterSpacing: '0.04em', textTransform: 'uppercase',
+        }}>
+          {icon('sparkles', { width: SZ.sm, height: SZ.sm })}
+          Labs
+        </span>
+      </nav>
+
+      <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <button type="button" className="cf-icon-btn" aria-label="Help">
+          {icon('help-circle', { width: SZ.xl, height: SZ.xl, color: C.textSecondary })}
+        </button>
+        <button type="button" className="cf-icon-btn" aria-label="Settings">
+          {icon('settings', { width: SZ.xl, height: SZ.xl, color: C.textSecondary })}
+        </button>
+        <button
+          type="button" className="cf-icon-btn"
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          onClick={toggleTheme}
+          style={{ width: 'auto', padding: '0 10px', gap: 6 }}
+        >
+          {icon(theme === 'dark' ? 'sun' : 'moon', { width: SZ.md, height: SZ.md, color: C.textSecondary })}
+          <span style={{ fontSize: 13, fontWeight: 500, color: C.textSecondary }}>
+            {theme === 'dark' ? 'Light' : 'Dark'}
+          </span>
+        </button>
+        <div style={{ width: 1, height: 24, background: C.border, margin: '0 6px' }} aria-hidden="true" />
+        <span role="button" tabIndex={0} aria-label="User menu for MK" style={{
+          width: 30, height: 30, borderRadius: '50%',
+          background: C.avatarPurple, color: '#fff',
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          fontWeight: 600, fontSize: 13, userSelect: 'none',
+        }}>MK</span>
+      </div>
+    </header>
+  );
+
+  /* ── Source panel ── */
+  const CategoryTab = ({ category, active, onSelect }) => (
+    <button
+      type="button" role="tab"
+      aria-selected={active}
+      aria-controls={`cf-panel-${category.key}`}
+      id={`cf-tab-${category.key}`}
+      onClick={() => onSelect(category.key)}
+      className="cf-font-lato cf-pressable"
+      style={{
+        display: 'inline-flex', alignItems: 'center', gap: 7,
+        fontSize: 14, fontWeight: 500, padding: '8px 16px', borderRadius: 50, cursor: 'pointer',
+        background: active ? C.textPrimary : C.surface,
+        color:      active ? C.surface    : C.textPrimary,
+        border: `1px solid ${active ? C.textPrimary : C.borderSoft}`,
+        transition: 'background 150ms ease, color 150ms ease, border-color 150ms ease',
+      }}
+    >
+      {icon(category.icon, { width: SZ.md, height: SZ.md })}
+      {category.label}
+    </button>
+  );
+
+  const SubmitButton = ({ busy, onClick }) => (
+    <button
+      type="button" onClick={onClick} disabled={busy} aria-busy={busy}
+      className="cf-font-lato cf-pressable cf-submit-btn"
+      style={{
+        height: BTN_H, width: '100%',
+        background: busy ? C.primaryDisabled : undefined,
+        color:      busy ? C.primaryDisabledText : C.surface,
+        border: 'none', borderRadius: 4,
+        fontSize: 16, fontWeight: 600,
+        cursor: busy ? 'not-allowed' : 'pointer',
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+      }}
+    >
+      {busy ? (
+        <>{icon('loader-2', { width: 17, height: 17, animation: 'spin 800ms linear infinite' })} Adapting your content…</>
+      ) : (
+        <>{icon('send', { width: 17, height: 17 })} Adapt Content</>
+      )}
+    </button>
+  );
+
+  const SourcePanel = ({ category, setCategory, onSubmit, busy }) => {
+    const data    = contextEngineData[category];
+    const wc      = countWords(data.rawText);
+    const cat     = CATEGORIES.find((c) => c.key === category);
+    const [textVisible, setTextVisible] = React.useState(true);
+    const fadeRef    = React.useRef(null);
+    const mountedRef = React.useRef(false);
+
+    React.useEffect(() => {
+      if (!mountedRef.current) { mountedRef.current = true; return; }
+      setTextVisible(false);
+      fadeRef.current = global.setTimeout(() => setTextVisible(true), 130);
+      return () => { if (fadeRef.current) global.clearTimeout(fadeRef.current); };
+    }, [category]);
+
+    return (
+      <section aria-labelledby="cf-source-heading" style={{
+        background: C.surface, borderRadius: 8,
+        border: `1px solid ${C.border}`,
+        padding: 24, display: 'flex', flexDirection: 'column', gap: 20, minHeight: 0,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
+          <div>
+            <h2 id="cf-source-heading" className="cf-font-lato"
+              style={{ fontSize: 21, fontWeight: 700, color: C.textPrimary, margin: 0, lineHeight: 1.2 }}>
+              Your Content
+            </h2>
+            <p style={{ fontSize: 16, color: C.textSecondary, margin: '5px 0 0', lineHeight: 1.6 }}>
+        	Type or paste any relevant content. Our AI will adapt it automatically to fit each target area automatically. </p>
+            <p style={{ fontSize: 14, color: C.textSecondary, margin: '5px 0 0', lineHeight: 1.6 }}>
+
+		You're viewing a demo. For the purpose of the demo, select a content preset below to see how adaptation works.              
+	In the full version, you'll be able to type or paste your own content.
+            </p>
+          </div>
+
+        </div>
+
+        <div>
+          <div id="cf-content-type-label" className="cf-eyebrow" style={{ marginBottom: 10 }}>Content Examples</div>
+          <div role="tablist" aria-labelledby="cf-content-type-label"
+            style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            {CATEGORIES.map((c) => (
+              <CategoryTab key={c.key} category={c} active={c.key === category} onSelect={setCategory} />
+            ))}
+          </div>
+        </div>
+
+        <div role="tabpanel" id={`cf-panel-${category}`} aria-labelledby={`cf-tab-${category}`}
+          style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column',
+                   opacity: textVisible ? 1 : 0, transition: 'opacity 130ms ease' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }} className="cf-eyebrow">
+            <span>Source text</span>
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: cat.color, textTransform: 'none', letterSpacing: 0, fontWeight: 600 }}>
+              <span style={{ width: 7, height: 7, borderRadius: '50%', background: cat.color }} aria-hidden="true" />
+              {data.label}
+            </span>
+
+          </div>
+          <textarea
+            readOnly aria-readonly="true"
+            aria-label="Source text — read only demo content"
+            value={data.rawText}
+            style={{
+              height: TA_H, width: '100%', padding: 16,
+              background: C.surfaceMuted,
+              border: `1px solid ${C.border}`,
+              boxShadow: 'inset 0 2px 5px rgba(0,0,0,0.05)',
+              borderRadius: 4, fontSize: 16, lineHeight: 1.65,
+              color: C.textPrimary, resize: 'none', outline: 'none', cursor: 'default',
+            }}
+          />
+          <span className="cf-font-opensans" aria-label={`${wc} words`}
+            style={{ fontSize: 12, color: C.textMuted, whiteSpace: 'nowrap', paddingTop: 4 }}>
+            {wc} words
+          </span>
+        </div>
+
+        <SubmitButton busy={busy} onClick={onSubmit} />
+      </section>
+    );
+  };
+
+  /* ── Surface sub-components ── */
+  const StatusPill = ({ filled }) => {
+    const [popping, setPopping] = React.useState(false);
+    const prevRef = React.useRef(false);
+
+    React.useEffect(() => {
+      if (filled && !prevRef.current) {
+        setPopping(true);
+        const t = global.setTimeout(() => setPopping(false), 800);
+        prevRef.current = true;
+        return () => global.clearTimeout(t);
+      }
+      if (!filled) prevRef.current = false;
+    }, [filled]);
+
+    return (
+      <span role="status" aria-live="polite" style={{
+        display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 13,
+        color:      filled ? C.successFg : C.textMuted,
+        background: filled ? C.successBg : C.inactiveBg,
+        padding: '5px 12px', borderRadius: 50, fontWeight: 500,
+        animation: popping ? 'cfPillPop 700ms cubic-bezier(0.34, 1.56, 0.64, 1)' : 'none',
+      }}>
+        <span aria-hidden="true" style={{
+          width: 7, height: 7, borderRadius: '50%',
+          background: filled ? C.successFg : C.inactiveDot,
+          animation: filled ? 'none' : 'cePulse 1.6s ease-in-out infinite',
+        }} />
+        {filled ? 'Live' : 'Awaiting content'}
+      </span>
+    );
+  };
+
+  const RewritingState = ({ accent }) => (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, color: accent, padding: 20 }}>
+      {icon('loader-2', { width: SZ.hero, height: SZ.hero, animation: 'spin 800ms linear infinite' })}
+      <span className="cf-font-lato" style={{ fontSize: 14, color: C.textSecondary, fontWeight: 500 }}>Rewriting…</span>
+    </div>
+  );
+
+  const EMPTY_IDLE_TEXT = {
+    [LAYOUTS.WIDE]:   'Slide headline & subheading will appear here',
+    [LAYOUTS.TALL]:   'Three adapted key points will appear here',
+    [LAYOUTS.SQUARE]: 'Caption and hashtags will appear here',
+  };
+
+  const EmptyState = ({ surface, busy }) => (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+      textAlign: 'center', padding: 20,
+      animation: busy ? 'cePulse 1.2s ease-in-out infinite' : 'none',
+    }}>
+      <span aria-hidden="true" style={{
+        width: 40, height: 40, borderRadius: 8,
+        background: C.surface, border: `1px solid ${C.border}`,
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: surface.accent,
+      }}>
+        {icon(surface.icon, { width: 20, height: 20 })}
+      </span>
+      <span style={{ fontSize: 13, color: C.textMuted }}>
+        {busy ? 'Adapting…' : EMPTY_IDLE_TEXT[surface.layout]}
+      </span>
+    </div>
+  );
+
+  /* ── Filled surface variants ── */
+  const PresentationSurface = ({ surface, catLabel, option }) => (
+    <div style={{
+      position: 'absolute', inset: 0,
+      background: `linear-gradient(135deg, ${surface.accent}, var(--cf-text-primary))`,
+      padding: '16px 24px', display: 'flex', alignItems: 'center', gap: 20, color: '#fff',
+    }}>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div className="cf-font-opensans" style={{
+          fontSize: 12, fontWeight: 600, opacity: 0.75,
+          letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: 8,
+        }}>{catLabel}</div>
+        <div className="cf-font-montserrat" style={{
+          fontWeight: 700, fontSize: 20, lineHeight: 1.2, letterSpacing: '-0.01em',
+        }}>{option.heading}</div>
+        <div className="cf-font-lato" style={{ fontSize: 14, marginTop: 6, opacity: 0.85 }}>{option.subheading}</div>
+      </div>
+      <div aria-hidden="true" style={{
+        width: 48, height: 48, borderRadius: 12,
+        background: 'rgba(255,255,255,0.18)',
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        backdropFilter: 'blur(2px)', flexShrink: 0,
+      }}>
+        {icon(surface.icon, { width: SZ.xxl, height: SZ.xxl, color: '#fff' })}
+      </div>
+    </div>
+  );
+
+  const InfographicSurface = ({ surface, catLabel, items }) => (
+    <div style={{
+      position: 'absolute', inset: 0,
+      background: C.surface, padding: '16px 18px',
+      display: 'flex', flexDirection: 'column', gap: 10,
+    }}>
+      <div className="cf-font-montserrat" style={{
+        fontWeight: 700, fontSize: 14, color: C.textPrimary, letterSpacing: '-0.01em', lineHeight: 1.2,
+      }}>{catLabel}</div>
+      <ol style={{ display: 'flex', flexDirection: 'column', gap: 8, flex: 1, listStyle: 'none', margin: 0, padding: 0 }}>
+        {items.map((item, i) => (
+          <li key={i} style={{
+            padding: '10px 12px', background: C.surfaceMuted, borderRadius: 4,
+            borderLeft: `3px solid ${surface.accent}`,
+            display: 'flex', alignItems: 'flex-start', gap: 10,
+          }}>
+            <span className="cf-font-opensans" aria-hidden="true" style={{
+              fontSize: 12, color: surface.accent, fontWeight: 700, marginTop: 1, flexShrink: 0,
+            }}>{String(i + 1).padStart(2, '0')}</span>
+            <div className="cf-font-lato" style={{ fontSize: 14, color: C.textPrimary, lineHeight: 1.45 }}>{item}</div>
+          </li>
+        ))}
+      </ol>
+      <div className="cf-font-opensans" style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        fontSize: 11, color: C.textFaint,
+      }}>
+        <span>visme.co</span>
+        <span aria-hidden="true" className="cf-font-montserrat" style={{
+          width: 16, height: 16, borderRadius: 3, background: surface.accent,
+          color: '#fff', display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          fontWeight: 800, fontSize: 10,
+        }}>V</span>
+      </div>
+    </div>
+  );
+
+  const SocialPostSurface = ({ surface, postText }) => {
+    const hi       = postText.indexOf('#');
+    const mainText = hi > 0 ? postText.substring(0, hi).trim() : postText;
+    const tags     = hi > 0 ? postText.substring(hi).trim() : '';
+    return (
+      <div style={{
+        position: 'absolute', inset: 0,
+        background: C.surface, padding: 16,
+        display: 'flex', flexDirection: 'column', gap: 10,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span aria-hidden="true" className="cf-font-montserrat" style={{
+            width: 26, height: 26, borderRadius: '50%', background: surface.accent,
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+            fontWeight: 800, fontSize: 12, color: '#fff', flexShrink: 0,
+          }}>V</span>
+          <span className="cf-font-lato" style={{ fontSize: 14, fontWeight: 600, color: C.textPrimary }}>Visme</span>
+          {icon('instagram', { width: SZ.md, height: SZ.md, color: surface.accent, marginLeft: 'auto' })}
+        </div>
+        <div className="cf-font-lato" style={{ fontSize: 14, lineHeight: 1.6, color: C.textPrimary, flex: 1, overflow: 'hidden' }}>{mainText}</div>
+        {tags && <div className="cf-font-lato" style={{ fontSize: 13, color: C.accentLink, lineHeight: 1.5, fontWeight: 500 }}>{tags}</div>}
+      </div>
+    );
+  };
+
+  const FilledSurface = ({ surface, category, currentOption }) => {
+    const catData = contextEngineData[category];
+    switch (surface.layout) {
+      case LAYOUTS.WIDE: {
+        const opt = catData.surfaces[SURFACE_KEYS.PRESENTATION].options[currentOption];
+        return <PresentationSurface surface={surface} catLabel={catData.label} option={opt} />;
+      }
+      case LAYOUTS.TALL: {
+        const items = catData.surfaces[SURFACE_KEYS.INFOGRAPHIC].options[currentOption];
+        return <InfographicSurface surface={surface} catLabel={catData.label} items={items} />;
+      }
+      default: {
+        const postText = catData.surfaces[SURFACE_KEYS.SOCIAL_POST].options[currentOption];
+        return <SocialPostSurface surface={surface} postText={postText} />;
+      }
+    }
+  };
+
+  /* ── Surface card ── */
+  const aspectFor = (layout) =>
+    layout === LAYOUTS.WIDE ? '16 / 9' : layout === LAYOUTS.TALL ? '4 / 5' : '1 / 1';
+
+  const SurfaceCard = ({ surface, filled, category, currentOption, onRewrite, onCopy, busy, staggerDelay }) => {
+    const [rewriting, setRewriting] = React.useState(false);
+    const [copied,    setCopied]    = React.useState(false);
+    const [revealing, setRevealing] = React.useState(false);
+    const timerRef      = React.useRef(null);
+    const copiedRef     = React.useRef(null);
+    const prevFilledRef = React.useRef(false);
+    const ready = filled && !rewriting;
+
+    const handleRewrite = () => {
+      setRewriting(true);
+      timerRef.current = global.setTimeout(() => { setRewriting(false); onRewrite(); }, TIMING.REWRITE_MS);
+    };
+
+    const handleCopy = () => {
+      onCopy();
+      setCopied(true);
+      copiedRef.current = global.setTimeout(() => setCopied(false), 1500);
+    };
+
+    /* Stagger-reveal when filled transitions false → true */
+    React.useEffect(() => {
+      if (filled && !prevFilledRef.current) {
+        setRevealing(true);
+        const t = global.setTimeout(() => setRevealing(false), 700 + (staggerDelay || 0));
+        prevFilledRef.current = true;
+        return () => global.clearTimeout(t);
+      }
+      if (!filled) prevFilledRef.current = false;
+    }, [filled]);
+
+    React.useEffect(() => {
+      setRewriting(false);
+      setCopied(false);
+      return () => {
+        if (timerRef.current)  { global.clearTimeout(timerRef.current);  timerRef.current  = null; }
+        if (copiedRef.current) { global.clearTimeout(copiedRef.current); copiedRef.current = null; }
+      };
+    }, [category, filled]);
+
+    const slotMaxH  = surface.layout === LAYOUTS.WIDE ? SIZES.WIDE_SLOT_HEIGHT : SIZES.SLOT_HEIGHT;
+    const slotBg    = ready ? `${surface.accent}14` : C.surfaceMuted;
+    const slotBd    = ready ? `${surface.accent}60` : C.borderDashed;
+    const disTitle  = !filled ? 'Adapt your content first' : undefined;
+    const revealAnim = revealing
+      ? `cfCardReveal 600ms ${staggerDelay || 0}ms cubic-bezier(0.22, 1, 0.36, 1) both`
+      : 'none';
+
+    return (
+      <article aria-label={surface.label} className={`cf-card${filled ? ' cf-card--filled' : ''}`} style={{
+        background: C.surface, borderRadius: 8,
+        border: `1px solid ${C.border}`,
+        borderTop: `2px solid ${surface.accent}`,
+        padding: 12, display: 'flex', flexDirection: 'column', gap: 10,
+        animation: revealAnim,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+          <span aria-hidden="true" style={{
+            width: 30, height: 30, borderRadius: 6,
+            background: `${surface.accent}20`, color: surface.accent,
+            display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            {icon(surface.icon, { width: SZ.lg, height: SZ.lg })}
+          </span>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: C.textPrimary, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {surface.label}
+            </div>
+            <div className="cf-font-opensans" style={{ fontSize: 12, color: C.textMuted, marginTop: 2 }}>{surface.meta}</div>
+          </div>
+        </div>
+
+        <div aria-live="polite" style={{
+          aspectRatio: aspectFor(surface.layout), width: '100%', flexShrink: 0,
+          maxHeight: slotMaxH, borderRadius: 6, position: 'relative', overflow: 'hidden',
+          background: slotBg, border: `1px dashed ${slotBd}`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto',
+        }}>
+          {rewriting && <RewritingState accent={surface.accent} />}
+          {!rewriting && filled  && <FilledSurface surface={surface} category={category} currentOption={currentOption} />}
+          {!rewriting && !filled && <EmptyState surface={surface} busy={busy} />}
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 'auto', paddingTop: 6 }}>
+          <button type="button" title={disTitle} className="cf-card-action"
+            style={{
+              opacity: ready ? 1 : 0.4, cursor: ready ? 'pointer' : 'default',
+              color: copied ? C.successFg : undefined,
+              borderColor: copied ? C.successFg : undefined,
+            }}
+            disabled={!ready} onClick={ready ? handleCopy : undefined}>
+            {icon(copied ? 'check' : 'copy', { width: SZ.md, height: SZ.md })}
+            {copied ? 'Copied!' : 'Copy'}
+          </button>
+          <button type="button" title={disTitle} className="cf-card-action"
+            style={{
+              color:       ready ? C.accentLink   : C.textSecondary,
+              borderColor: ready ? C.accentLink   : C.borderSoft,
+              opacity: ready ? 1 : 0.4, cursor: ready ? 'pointer' : 'default',
+            }}
+            disabled={!ready} onClick={ready ? handleRewrite : undefined}
+            onMouseEnter={(e) => { if (ready) e.currentTarget.style.background = C.accentLinkBg; }}
+            onMouseLeave={(e) => { if (ready) e.currentTarget.style.background = 'transparent'; }}>
+            <span aria-hidden="true" style={{ display: 'inline-flex', animation: rewriting ? 'spin 600ms linear infinite' : 'none' }}>
+              {icon('refresh-cw', { width: SZ.md, height: SZ.md })}
+            </span>
+            {rewriting ? 'Rewriting…' : 'Rewrite'}
+          </button>
+          <span className="cf-font-opensans" style={{ marginLeft: 'auto', fontSize: 12, color: C.textFaint }}>
+            {ready ? OPTION_LABELS[currentOption] : (rewriting ? 'Rewriting…' : '—')}
+          </span>
+        </div>
+      </article>
+    );
+  };
+
+  /* ── Surfaces panel ── */
+  const SurfacesPanel = ({ filled, category, surfaceOptions, onRewrite, onCopy, isNarrow, busy }) => {
+    const card = (key, wrap, staggerDelay = 0) => {
+      const surface = SURFACES_BY_KEY[key];
+      const node = (
+        <SurfaceCard
+          key={key} surface={surface} filled={filled} category={category}
+          currentOption={surfaceOptions[key]}
+          onRewrite={() => onRewrite(key)}
+          onCopy={() => onCopy(key)}
+          busy={busy}
+          staggerDelay={staggerDelay}
+        />
+      );
+      return wrap ? <div key={key} style={wrap}>{node}</div> : node;
+    };
+
+    return (
+      <section aria-labelledby="cf-surfaces-heading"
+        style={{ display: 'flex', flexDirection: 'column', gap: 16, minHeight: 0 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <div>
+            <h2 id="cf-surfaces-heading" className="cf-font-lato"
+              style={{ fontSize: 21, fontWeight: 700, color: C.textPrimary, margin: 0, lineHeight: 1.2 }}>
+              Adapted Formats
+            </h2>
+            <p style={{ fontSize: 14, color: C.textSecondary, margin: '5px 0 0' }}>
+              Three formats adapted from your content.
+            </p>
+          </div>
+          <StatusPill filled={filled} />
+        </div>
+
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: isNarrow ? '1fr' : '1fr 1fr',
+          gap: 16, alignItems: 'start',
+        }}>
+          {card(SURFACE_KEYS.PRESENTATION, { gridColumn: '1 / -1' }, 0)}
+          {card(SURFACE_KEYS.INFOGRAPHIC, null, 160)}
+          {card(SURFACE_KEYS.SOCIAL_POST, null, 320)}
+        </div>
+      </section>
+    );
+  };
+
+  /* ── Toasts ── */
+  const Toast = ({ onClose }) => (
+    <div className="ce-toast cf-font-lato" role="status" aria-live="polite" style={{
+      position: 'fixed', bottom: 24, right: 24, zIndex: Z.TOAST,
+      background: C.surface, borderRadius: 8,
+      border: `1px solid ${C.border}`,
+      boxShadow: 'rgba(0,0,0,0.12) 0 4px 16px 0',
+      padding: 16, paddingRight: 44, maxWidth: 360,
+      display: 'flex', gap: 12,
+    }}>
+      <span aria-hidden="true" style={{
+        width: 36, height: 36, borderRadius: '50%', flexShrink: 0,
+        background: C.successBg, color: C.successFg,
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+      }}>
+        {icon('check', { width: SZ.xl, height: SZ.xl, strokeWidth: 2.5 })}
+      </span>
+      <div>
+        <div style={{ fontSize: 14, fontWeight: 700, color: C.textPrimary, marginBottom: 2 }}>Your content has been adapted</div>
+        <div style={{ fontSize: 13, color: C.textSecondary, lineHeight: 1.5 }}>Presentation slide, infographic, and social post are ready to use.</div>
+      </div>
+      <button type="button" onClick={onClose} aria-label="Close notification" style={{
+        position: 'absolute', top: 8, right: 8,
+        background: 'transparent', border: 'none', cursor: 'pointer',
+        color: C.textMuted, padding: 8,
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: 4,
+      }}>
+        {icon('x', { width: SZ.lg, height: SZ.lg })}
+      </button>
+    </div>
+  );
+
+  const CopyToast = ({ label }) => (
+    <div className="ce-toast cf-font-lato" role="status" aria-live="polite" style={{
+      position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+      zIndex: Z.COPY_TOAST,
+      background: C.copyToastBg, borderRadius: 6,
+      boxShadow: 'rgba(0,0,0,0.25) 0 4px 16px 0',
+      padding: '10px 20px',
+      display: 'flex', alignItems: 'center', gap: 10, whiteSpace: 'nowrap',
+    }}>
+      {icon('check', { width: 15, height: 15, color: C.spinnerGreen, flexShrink: 0 })}
+      <span style={{ fontSize: 14, color: C.copyToastText, fontWeight: 500 }}>{label} copied to clipboard</span>
+    </div>
+  );
+
+  /* ── Clipboard ── */
+  const buildCopyPayload = (key, catData, idx) => {
+    const surface = SURFACES_BY_KEY[key];
+    switch (key) {
+      case SURFACE_KEYS.PRESENTATION: {
+        const { heading, subheading } = catData.surfaces[SURFACE_KEYS.PRESENTATION].options[idx];
+        return { text: `${heading}\n${subheading}`, label: surface.copyLabel };
+      }
+      case SURFACE_KEYS.INFOGRAPHIC: {
+        const items = catData.surfaces[SURFACE_KEYS.INFOGRAPHIC].options[idx];
+        return { text: items.map((it, i) => `${i + 1}. ${it}`).join('\n'), label: surface.copyLabel };
+      }
+      default: {
+        return { text: catData.surfaces[SURFACE_KEYS.SOCIAL_POST].options[idx], label: surface.copyLabel };
+      }
+    }
+  };
+
+  /* ── App ── */
+  const App = () => {
+    const [category,       setCategory]       = React.useState(CF.CATEGORY_KEYS.FINANCIAL);
+    const [busy,           setBusy]           = React.useState(false);
+    const [filled,         setFilled]         = React.useState(false);
+    const [toast,          setToast]          = React.useState(null);
+    const [copyToast,      setCopyToast]      = React.useState(null);
+    const [surfaceOptions, setSurfaceOptions] = React.useState(CF.INITIAL_SURFACE_OPTIONS);
+    const [theme,          setTheme]          = React.useState(() => localStorage.getItem('cf-theme') || 'light');
+
+    const isNarrow         = useMediaQuery(NARROW_BP);
+    const adaptTimerRef    = React.useRef(null);
+    const toastTimerRef    = React.useRef(null);
+    const copyToastTimerRef = React.useRef(null);
+
+    React.useEffect(() => {
+      setFilled(false);
+      setSurfaceOptions(CF.INITIAL_SURFACE_OPTIONS);
+    }, [category]);
+
+    React.useEffect(() => {
+      global.document.documentElement.dataset.theme = theme;
+      localStorage.setItem('cf-theme', theme);
+    }, [theme]);
+
+    useLucideIcons();
+
+    React.useEffect(() => () => {
+      [adaptTimerRef, toastTimerRef, copyToastTimerRef].forEach((r) => {
+        if (r.current) global.clearTimeout(r.current);
+      });
+    }, []);
+
+    const toggleTheme = () => setTheme((t) => t === 'dark' ? 'light' : 'dark');
+
+    const onSubmit = () => {
+      setBusy(true);
+      setFilled(false);
+      setSurfaceOptions(CF.INITIAL_SURFACE_OPTIONS);
+      adaptTimerRef.current = global.setTimeout(() => {
+        setBusy(false);
+        setFilled(true);
+        setToast({ category });
+        toastTimerRef.current = global.setTimeout(() => setToast(null), TIMING.TOAST_DISMISS_MS);
+      }, TIMING.ADAPT_MS);
+    };
+
+    const onRewrite = (key) =>
+      setSurfaceOptions((prev) => ({ ...prev, [key]: (prev[key] + 1) % OPTION_COUNT }));
+
+    const onCopy = (key) => {
+      const { text, label } = buildCopyPayload(key, contextEngineData[category], surfaceOptions[key]);
+      if (!global.navigator?.clipboard) return;
+      global.navigator.clipboard.writeText(text).then(() => {
+        setCopyToast(label);
+        copyToastTimerRef.current = global.setTimeout(() => setCopyToast(null), TIMING.COPY_TOAST_MS);
+      });
+    };
+
+    return (
+      <div style={{
+        display: 'flex', flexDirection: 'column',
+        minHeight: '100vh', background: C.bg,
+        maxWidth: MAX_WIDTH, margin: '0 auto',
+      }}>
+        <Header theme={theme} toggleTheme={toggleTheme} />
+        <main style={{
+          flex: 1,
+          padding:             isNarrow ? 16 : 24,
+          display:             'grid',
+          gridTemplateColumns: isNarrow ? '1fr' : 'minmax(320px, 33fr) minmax(0, 67fr)',
+          gridAutoRows:        'min-content',
+          gap:                 isNarrow ? 16 : 24,
+          alignItems:          'start',
+          minHeight:           0,
+        }}>
+          <SourcePanel category={category} setCategory={setCategory} onSubmit={onSubmit} busy={busy} />
+          <SurfacesPanel
+            filled={filled} category={category}
+            surfaceOptions={surfaceOptions}
+            onRewrite={onRewrite} onCopy={onCopy}
+            isNarrow={isNarrow}
+            busy={busy}
+          />
+        </main>
+        {toast     && <Toast onClose={() => setToast(null)} />}
+        {copyToast && <CopyToast label={copyToast} />}
+      </div>
+    );
+  };
+
+  /* ── Bootstrap ── */
+  const mount = () => {
+    const el = global.document.getElementById('root');
+    if (!el) return;
+    ReactDOM.createRoot(el).render(<App />);
+  };
+
+  if (global.document.readyState === 'loading') {
+    global.document.addEventListener('DOMContentLoaded', mount, { once: true });
+  } else {
+    mount();
+  }
+})(window);
+  </script>
+</body>
+</html>
