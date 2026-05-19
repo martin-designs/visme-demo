@@ -2,7 +2,21 @@
 
 A concept demo that transforms a single content brief into three adapted visual formats — presentation slide, infographic, and social post — built with Visme's design system.
 
+**Built in:** 8-hour sprint · **Toolchain:** Gemini, Claude Code (Sonnet 4.6 + Opus 4.7), Claude Design
+
 ![Content Forge preview](content-forge-preview.png)
+
+> Full process write-up: [Case Study — Visme's Content Forge](content-forge-case-study.pdf)
+
+---
+
+## Concept
+
+Business professionals frequently need to communicate the same message across multiple visual surfaces at once — a presentation deck, an infographic, and a social post. For non-designers inside Visme's core user base (marketing managers, business analysts, compliance teams), the bottleneck isn't the content itself. It's the manual effort of reformatting that content to fit each layout's constraints without overflowing containers or losing meaning in truncation.
+
+Content Forge addresses this directly: the user states their intent once, and the system adapts the output for every surface automatically — no designer, no copywriter, no bounding-box adjustments.
+
+The JTBD was informed by two Visme customer case studies: WOW! (a telecoms L&D team struggling with template breakage from long copy) and QSN (a compliance consultancy overwhelmed by the cognitive load of condensing regulatory text into infographic sidebars).
 
 ---
 
@@ -98,3 +112,13 @@ visme-demo/
 - HTML5 · Vanilla CSS · React 18 (CDN) · Babel standalone (no build)
 - [Lucide Icons](https://lucide.dev/) · Google Fonts
 - Zero dependencies, zero build tooling
+
+---
+
+## What's next
+
+Content Forge is a working demo, not a shipped product. Three meaningful upgrades would take it to production:
+
+1. **Live Claude API** — replace the hardcoded content presets with a real-time API call so users paste any raw text and the AI adapts it on the fly
+2. **Design system extraction pipeline** — productize the URL-to-DESIGN.md scrape into a reusable ruleset that semantically interprets any product's design language and outputs a structured token file
+3. **Visme editor integration** — wire the adapted outputs directly into Visme's creation editor via API, populating all layout slots with correctly formatted content at a single click
